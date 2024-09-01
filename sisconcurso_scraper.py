@@ -1,12 +1,22 @@
 import requests
 import logging
+import re
 from bs4 import BeautifulSoup
 logger = logging.getLogger(__name__)
 
 LINK_PAGINA = "https://sistemas.ufg.br/CONCURSOS_WEB/"
 
-def extrair_link(elemento): 
-    return None
+def extrair_link(elemento):
+    links_encontrados = []
+    for link in elemento.find_all("a"):
+        endpoint = link['onclick']
+        print(endpoint)
+        links_encontrados.append({
+                'titulo': link.text, 
+                'url': f"{LINK_PAGINA}{re.search(r"\'(.*)\'\)", endpoint).group(1)}"
+            })
+    return links_encontrados
+    
 
 def main():
     logging.basicConfig(filename='email-concursos.log', level=logging.INFO)
@@ -30,10 +40,10 @@ def main():
                 "local" : concurso.find_all("td")[4].text,
                 "link" : extrair_link(concurso.find_all("td")[5]),
             })
-        print (concursos_encontrados)
     else:
         logger.info("Nao foi possivel fazer a requisicao ao site do SISCONCURSO.")
 
+    logger.info(f"{len(concursos_encontrados)} concursos em aberto encontrados...")
 
 if __name__ == '__main__':
 
