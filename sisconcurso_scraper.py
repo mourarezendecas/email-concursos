@@ -1,16 +1,18 @@
 import requests
 import logging
 import re
+import json
+from datetime import datetime
 from bs4 import BeautifulSoup
 logger = logging.getLogger(__name__)
 
 LINK_PAGINA = "https://sistemas.ufg.br/CONCURSOS_WEB/"
+DATA_ATUAL = datetime.today().strftime('%Y-%m-%d')
 
 def extrair_link(elemento):
     links_encontrados = []
     for link in elemento.find_all("a"):
         endpoint = link['onclick']
-        print(endpoint)
         links_encontrados.append({
                 'titulo': link.text, 
                 'url': f"{LINK_PAGINA}{re.search(r"\'(.*)\'\)", endpoint).group(1)}"
@@ -23,6 +25,7 @@ def main():
 
     logger.info("Iniciando requisicao ao site do SISCONCURSO...")
     response = requests.get(LINK_PAGINA)
+    concursos_encontrados = []
 
     if response.status_code == 200: 
         logger.info("Conexao ao site do SISCONCURSO estabelecida com sucesso!!!")
@@ -30,7 +33,7 @@ def main():
         soup = BeautifulSoup(response.text, 'html.parser')
         div_concursos_abertos = soup.find("table", {"class": "listaconcursos"})
         table_concursos = div_concursos_abertos.find("tbody")
-        concursos_encontrados = []
+        
         for concurso in table_concursos.find_all("tr"):
             concursos_encontrados.append({
                 "no_edital" : concurso.find_all("td")[0].text,
@@ -45,6 +48,11 @@ def main():
 
     logger.info(f"{len(concursos_encontrados)} concursos em aberto encontrados...")
 
-if __name__ == '__main__':
+    nome_arquivo = f"sisconcurso-json/{DATA_ATUAL}-sisconcurso.json"
 
+    with open(nome_arquivo, "w") as f:
+     json.dump(concursos_encontrados, f)
+
+
+if __name__ == '__main__':
     main()
