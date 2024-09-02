@@ -1,26 +1,24 @@
 import smtplib
-from email.mime.text import MIMEText
 import os
-from dotenv import load_dotenv, dotenv_values
+from email.mime.text import MIMEText
+from database_connection import get_emails
 
-subject = "Hello from Python"
-body = "This is a email body"
-
+subject = "Email Subject"
+body = "This is the body of the text message"
 sender = os.getenv("EMAIL_SENDER")
-
-recipient = ""
-
-sender_password = os.getenv("EMAIL_PASSWORD")
+recipients = get_emails()
+password = os.getenv("APPLICATION_PASSWORD")
 
 def send_email(subject, body, sender, recipients, password):
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = sender
-    msg['To'] = recipients
-
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
         smtp_server.login(sender, password)
-        smtp_server.sendmail(sender, recipients, msg.as_string())
-    print('Message sent')
+        for mail in recipients:
+            msg = MIMEText(body)
+            msg['Subject'] = subject
+            msg['From'] = sender
+            msg['To'] = mail
+            smtp_server.sendmail(sender, recipients, msg.as_string())
+            print(f"Message sent to {mail}!")
+    smtp_server.close()
 
-send_email(subject, body, sender,  recipient, sender_password)
+send_email(subject, body, sender, recipients, password)
