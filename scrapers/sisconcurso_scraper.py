@@ -1,13 +1,9 @@
 import requests
-import logging
 import re
 import json
-from datetime import datetime
 from bs4 import BeautifulSoup
-logger = logging.getLogger('execucao')
 
 LINK_PAGINA = "https://sistemas.ufg.br/CONCURSOS_WEB/"
-DATA_ATUAL = datetime.today().strftime('%Y-%m-%d')
 
 def extrair_link(elemento):
     links_encontrados = []
@@ -20,16 +16,13 @@ def extrair_link(elemento):
     return links_encontrados
     
 
-def main():
-    logging.basicConfig(filename='execucao.log', level=logging.INFO)
-
-    logger.info("Iniciando requisicao ao site do SISCONCURSO...")
+def scrape_sisconcurso():
+    print("Iniciando requisicao ao site do SISCONCURSO...")
     response = requests.get(LINK_PAGINA)
     concursos_encontrados = []
 
     if response.status_code == 200: 
-        logger.info("Conexao ao site do SISCONCURSO estabelecida com sucesso!!!")
-        logger.info(response)
+        print("Conexao ao site do SISCONCURSO estabelecida com sucesso!!!")
         soup = BeautifulSoup(response.text, 'html.parser')
         div_concursos_abertos = soup.find("table", {"class": "listaconcursos"})
         table_concursos = div_concursos_abertos.find("tbody")
@@ -39,20 +32,16 @@ def main():
                 "no_edital" : concurso.find_all("td")[0].text,
                 "selecao" : concurso.find_all("td")[1].text,
                 "unidade" : concurso.find_all("td")[2].text,
-                "concurso/ps" : concurso.find_all("td")[3].text,
+                "concurso-ps" : concurso.find_all("td")[3].text,
                 "local" : concurso.find_all("td")[4].text,
                 "link" : extrair_link(concurso.find_all("td")[5]),
             })
     else:
-        logger.info("Nao foi possivel fazer a requisicao ao site do SISCONCURSO.")
+        print("Nao foi possivel fazer a requisicao ao site do SISCONCURSO.")
 
-    logger.info(f"{len(concursos_encontrados)} concursos em aberto encontrados...")
+    print(f"{len(concursos_encontrados)} concursos em aberto encontrados...")
 
-    nome_arquivo = f"sisconcurso-json/{DATA_ATUAL}-sisconcurso.json"
+    nome_arquivo = f"json-concursos/sisconcurso.json"
 
     with open(nome_arquivo, "w") as f:
      json.dump(concursos_encontrados, f)
-
-
-if __name__ == '__main__':
-    main()
