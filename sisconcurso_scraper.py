@@ -4,7 +4,7 @@ import re
 import json
 from datetime import datetime
 from bs4 import BeautifulSoup
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('execucao')
 
 LINK_PAGINA = "https://sistemas.ufg.br/CONCURSOS_WEB/"
 DATA_ATUAL = datetime.today().strftime('%Y-%m-%d')
@@ -21,7 +21,7 @@ def extrair_link(elemento):
     
 
 def main():
-    logging.basicConfig(filename='email-concursos.log', level=logging.INFO)
+    logging.basicConfig(filename='execucao.log', level=logging.INFO)
 
     logger.info("Iniciando requisicao ao site do SISCONCURSO...")
     response = requests.get(LINK_PAGINA)

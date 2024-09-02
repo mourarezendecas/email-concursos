@@ -1,7 +1,11 @@
 import smtplib
 import os
+import logging
 from email.mime.text import MIMEText
 from database_connection import get_emails
+
+logger = logging.getLogger('execucao')
+logging.basicConfig(filename='execucao.log', level=logging.INFO)
 
 subject = "Email Subject"
 body = "This is the body of the text message"
@@ -18,7 +22,7 @@ def send_email(subject, body, sender, recipients, password):
             msg['From'] = sender
             msg['To'] = mail
             smtp_server.sendmail(sender, recipients, msg.as_string())
-            print(f"Message sent to {mail}!")
+            logger.info(f"Message sent to {mail}!")
     smtp_server.close()
 
 send_email(subject, body, sender, recipients, password)
