@@ -6,7 +6,7 @@ DATA_ATUAL = datetime.today().strftime('%d %m %Y')
 
 CURRENT_DIR = os.path.dirname(__file__)
 PROJECT_DIR = os.path.abspath(os.path.join(CURRENT_DIR, '..'))
-SISCONCURSO_PATH = os.path.join(PROJECT_DIR, 'json-concursos')
+SISCONCURSO_PATH = os.path.join(PROJECT_DIR, '/tmp')
 
 def retorna_email(nome_usuario):
     return f"""

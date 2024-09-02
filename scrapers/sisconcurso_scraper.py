@@ -11,7 +11,7 @@ def extrair_link(elemento):
         endpoint = link['onclick']
         links_encontrados.append({
                 'titulo': link.text, 
-                'url': f"{LINK_PAGINA}{re.search(r"\'(.*)\'\)", endpoint).group(1)}"
+                'url': "{0}{1}".format(LINK_PAGINA, re.search(r"'(.*)'", endpoint).group(1))   
             })
     return links_encontrados
     
@@ -41,7 +41,7 @@ def scrape_sisconcurso():
 
     print(f"{len(concursos_encontrados)} concursos em aberto encontrados...")
 
-    nome_arquivo = f"json-concursos/sisconcurso.json"
+    nome_arquivo = f"/tmp/sisconcurso.json"
 
     with open(nome_arquivo, "w") as f:
      json.dump(concursos_encontrados, f)
