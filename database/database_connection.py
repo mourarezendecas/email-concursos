@@ -24,8 +24,14 @@ def get_users():
     try:
         users = collection.find()
         client.close
+        users_list = []
+        for user in users:
+            users_list.append({
+                "name":user.get('name'),
+                "email":user.get('email'),
+            })
         print("Lista de usuarios da base de dados obtida com sucesso!!!")
-        return users
+        return users_list
     except Exception as e:
         client.close
         print(f"Nao foi possivel obter a lista de usuarios: {e}!!!")

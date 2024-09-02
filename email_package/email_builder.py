@@ -8,7 +8,7 @@ CURRENT_DIR = os.path.dirname(__file__)
 PROJECT_DIR = os.path.abspath(os.path.join(CURRENT_DIR, '..'))
 SISCONCURSO_PATH = os.path.join(PROJECT_DIR, 'json-concursos')
 
-def retorna_email():
+def retorna_email(nome_usuario):
     return f"""
 <!DOCTYPE html>
 <style>
@@ -40,7 +40,7 @@ def retorna_email():
                                         <!-- Body -->
                                         <tr>
                                             <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                            Olá! <br>
+                                            Olá, {nome_usuario}! <br>
                                             Abaixo, segue em anexo os concursos com inscrições abertas encontrados.
                                             <br>
                                             {retorna_elemento_sisconcurso()}
