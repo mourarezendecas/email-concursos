@@ -16,7 +16,7 @@ def build_message(user):
     message["From"] = SENDER_EMAIL
     message["Subject"] = subject
     message["To"] = user['email']
-    message.attach(MIMEText(retorna_email(user['name']), "html"))
+    message.attach(MIMEText(retorna_email(user['name'], user['states']), "html"))
 
     return message
 

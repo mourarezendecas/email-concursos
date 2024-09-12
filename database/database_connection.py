@@ -29,6 +29,7 @@ def get_users():
             users_list.append({
                 "name":user.get('name'),
                 "email":user.get('email'),
+                "states":user.get('states')
             })
         print("Lista de usuarios da base de dados obtida com sucesso!!!")
         return users_list
@@ -48,7 +49,8 @@ def get_emails():
 
 # usuario = {
 #     "name" : "",
-#     "email" : ""
+#     "email" : "",
+#     "states": ["DF", "SC", "GO", "NACIONAL"]
 # }
 
 # insert(usuario)

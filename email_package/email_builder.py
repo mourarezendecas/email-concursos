@@ -6,9 +6,9 @@ DATA_ATUAL = datetime.today().strftime('%d %m %Y')
 
 CURRENT_DIR = os.path.dirname(__file__)
 PROJECT_DIR = os.path.abspath(os.path.join(CURRENT_DIR, '..'))
-SISCONCURSO_PATH = os.path.join(PROJECT_DIR, '/tmp')
+TMP_PATH = os.path.join(PROJECT_DIR, '/tmp')
 
-def retorna_email(nome_usuario):
+def retorna_email(nome_usuario, preferencia_estados):
     return f"""
 <!DOCTYPE html>
 <style>
@@ -44,6 +44,8 @@ def retorna_email(nome_usuario):
                                             Abaixo, segue em anexo os concursos com inscrições abertas encontrados.
                                             <br>
                                             {retorna_elemento_sisconcurso()}
+                                            <br>
+                                            {retorna_elemento_pci_concursos(preferencia_estados)}
                                             </td>
                                         </tr>
                                         <tr>
@@ -67,7 +69,7 @@ def retorna_email(nome_usuario):
 """
 
 def retorna_elemento_sisconcurso():
-    with open(f'{SISCONCURSO_PATH}/sisconcurso.json') as file:
+    with open(f'{TMP_PATH}/sisconcurso.json') as file:
         data = json.load(file)
     
     elementos = []
@@ -76,6 +78,22 @@ def retorna_elemento_sisconcurso():
         for i in data:
             elementos.append(f"""<li><a href="{i['link'][0]['url']}"> {i['selecao']} | {i['unidade']} | {i['concurso-ps']} | {i['local']}</a></li>""")
         lista = f"""<ul><strong>SISCONCURSOS</strong>{'<br>'.join(elementos)}</ul>"""
+        return lista
+    else:
+        lista = f"""<ul><strong>SISCONCURSOS</strong><br>Nenhum concurso disponibilizado no sisconcursos.</ul>"""
+
+
+def retorna_elemento_pci_concursos(preferencia_estados):
+    with open(f'{TMP_PATH}/pciconcursos.json') as file:
+        data = json.load(file)
+    
+    elementos = []
+    
+    if len(data)>0:
+        for i in data:
+            if(i['estado'] in preferencia_estados):
+                elementos.append(f"""<li><a href="{i['link']}"> {i['titulo']} <br> {i['descricao']} <br> {i['estado']} <br> Inscricões até: {i['data_inscricao']}</a></li>""")
+        lista = f"""<ul><strong>PCI CONCURSOS</strong>{'<br>'.join(elementos)}</ul>"""
         return lista
     else:
         lista = f"""<ul><strong>SISCONCURSOS</strong><br>Nenhum concurso disponibilizado no sisconcursos.</ul>"""
